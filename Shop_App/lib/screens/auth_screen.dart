@@ -43,9 +43,9 @@ class AuthScreen extends StatelessWidget {
                 children: <Widget>[
                   Flexible(
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 20.0),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 94.0),
                       transform: Matrix4.rotationZ(-10 * pi / 180)
                         ..translate(-10.0),
                       // ..translate(-10.0),
@@ -139,11 +139,11 @@ class _AuthCardState extends State<AuthCard>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('An error occoured!'),
+        title: const Text('An error occoured!'),
         content: Text(message),
         actions: [
-          FlatButton(
-            child: Text('Okay'),
+          TextButton(
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -226,7 +226,7 @@ class _AuthCardState extends State<AuthCard>
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
         width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -292,25 +292,46 @@ class _AuthCardState extends State<AuthCard>
                 if (_isLoading)
                   CircularProgressIndicator()
                 else
-                  RaisedButton(
+                  ElevatedButton(
                     child:
                         Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                     onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.resolveWith(
+                        (_) => RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      padding: MaterialStateProperty.resolveWith(
+                        (_) => const EdgeInsets.symmetric(
+                          horizontal: 30.0,
+                          vertical: 8.0,
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                        (_) => Theme.of(context).primaryColor,
+                      ),
+                      foregroundColor: MaterialStateProperty.resolveWith(
+                        (_) => Theme.of(context).primaryTextTheme.button.color,
+                      ),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
-                FlatButton(
+                TextButton(
                   child: Text(
                       '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Theme.of(context).primaryColor,
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.resolveWith(
+                      (_) => const EdgeInsets.symmetric(
+                        horizontal: 30.0,
+                        vertical: 4,
+                      ),
+                    ),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    foregroundColor: MaterialStateProperty.resolveWith(
+                      (_) => Theme.of(context).primaryColor,
+                    ),
+                  ),
                 ),
               ],
             ),
