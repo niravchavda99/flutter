@@ -69,10 +69,15 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   Widget build(BuildContext context) {
     final Color bgColor = Theme.of(context).primaryColor;
     final Color fgColor = Colors.white;
+    final Color themeColor = Colors.white;
 
     return Scaffold(
+      backgroundColor: themeColor,
       appBar: AppBar(
-        title: Text('Simple Calculator'),
+        title: Text(
+          'Simple Calculator',
+          style: TextStyle(fontSize: 25),
+        ),
       ),
       body: Column(
         children: [
@@ -83,13 +88,14 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
               child: Text(
                 this._inputText,
                 style: TextStyle(
-                  fontSize: 50,
+                  fontSize: 80,
                 ),
                 textAlign: TextAlign.right,
               ),
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Button(
                 key: ValueKey('C'),
