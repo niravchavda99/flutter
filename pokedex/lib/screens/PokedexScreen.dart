@@ -2,8 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pokedex/models/Pokemon.dart';
+import 'package:pokedex/utils/Utils.dart';
+import 'package:pokedex/widgets/PokemonTile.dart';
 
 class PokedexScreen extends StatefulWidget {
+  static const routeName = '/pokedex';
+  static const String _API_ENDPOINT = 'https://pokeapi.co/api/v2/pokemon/';
+
   PokedexScreen({Key key}) : super(key: key);
 
   @override
@@ -21,8 +27,8 @@ class _PokedexScreenState extends State<PokedexScreen> {
 
   void _loadPokemons() async {
     try {
-      final response = await http
-          .get(Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=20'));
+      final response =
+          await http.get(Uri.parse('${PokedexScreen._API_ENDPOINT}?limit=20'));
       var allPokemons = json.decode(response.body)['results'];
       setState(() {
         this.pokemons = allPokemons;
@@ -30,6 +36,15 @@ class _PokedexScreenState extends State<PokedexScreen> {
     } on Exception catch (e) {
       print(e);
     }
+  }
+
+  Future<Pokemon> _fetchPokemon(final String name) async {
+    final response =
+        await http.get(Uri.parse('${PokedexScreen._API_ENDPOINT}$name'));
+    var pokemon = json.decode(response.body);
+
+    Pokemon p = Utils.parsePokemon(pokemon);
+    return p;
   }
 
   @override
@@ -48,10 +63,19 @@ class _PokedexScreenState extends State<PokedexScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: ListView.builder(
+        itemExtent: 150,
+        shrinkWrap: true,
         itemCount: pokemons.length,
-        itemBuilder: (context, i) => Container(
-          width: double.infinity,
-          child: Text(pokemons[i]['name']),
+        itemBuilder: (ctx, i) => FutureBuilder(
+          future: _fetchPokemon(pokemons[i]['name']),
+          builder: (c, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+            else {
+              Pokemon pokemon = snapshot.data as Pokemon;
+              return PokemonTile(pokemon);
+            }
+          },
         ),
       ),
     );
